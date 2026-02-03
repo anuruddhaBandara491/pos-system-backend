@@ -29,6 +29,7 @@ class StoreProductRequest extends FormRequest
             'stock_qty' => 'required|integer|min:0',
             'reorder_level' => 'required|integer|min:0',
             'category' => 'nullable|string|max:100',
+            'category_id' => 'nullable|integer|exists:categories,id',
             'is_active' => 'boolean',
         ];
     }

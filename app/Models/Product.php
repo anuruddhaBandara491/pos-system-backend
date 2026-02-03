@@ -8,6 +8,7 @@ class Product extends Model
 {
     protected $fillable = [
         'branch_id',
+        'category_id',
         'sku',
         'name',
         'description',
@@ -33,6 +34,14 @@ class Product extends Model
     public function branch()
     {
         return $this->belongsTo(Branch::class);
+    }
+
+    /**
+     * Get the category this product belongs to.
+     */
+    public function category()
+    {
+        return $this->belongsTo(Category::class);
     }
 
     /**

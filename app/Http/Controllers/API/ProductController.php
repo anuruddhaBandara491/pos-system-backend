@@ -66,7 +66,7 @@ class ProductController extends BaseController
             }
             $query->orderBy($sortBy, $sortOrder);
 
-            $products = $query->with('branch')->paginate(15);
+            $products = $query->with('branch', 'category')->paginate(15);
             return $this->success(
                 [
                     'data' => $products->items(),
@@ -97,7 +97,7 @@ class ProductController extends BaseController
                 return $this->error('Unauthorized access to this product', 403);
             }
 
-            $productData = $product->load('branch');
+            $productData = $product->load('branch', 'category');
 
             return $this->success(
                 [
@@ -118,6 +118,7 @@ class ProductController extends BaseController
                     'reorder_level' => $productData->reorder_level,
                     'is_low_stock' => $productData->isLowStock(),
                     'category' => $productData->category,
+                    'category_id' => $productData->category_id,
                     'is_active' => $productData->is_active,
                     'created_at' => $productData->created_at,
                     'updated_at' => $productData->updated_at,
@@ -139,7 +140,7 @@ class ProductController extends BaseController
         try {
             $validated = $request->validated();
             $product = Product::create($validated);
-            $product->load('branch');
+            $product->load('branch', 'category');
 
             DB::commit();
 
@@ -161,6 +162,7 @@ class ProductController extends BaseController
                     'stock_qty' => $product->stock_qty,
                     'reorder_level' => $product->reorder_level,
                     'category' => $product->category,
+                    'category_id' => $product->category_id,
                     'is_active' => $product->is_active,
                     'created_at' => $product->created_at,
                 ],
@@ -191,7 +193,7 @@ class ProductController extends BaseController
 
             $validated = $request->validated();
             $product->update($validated);
-            $product->load('branch');
+            $product->load('branch', 'category');
 
             DB::commit();
 
@@ -213,6 +215,7 @@ class ProductController extends BaseController
                     'stock_qty' => $product->stock_qty,
                     'reorder_level' => $product->reorder_level,
                     'category' => $product->category,
+                    'category_id' => $product->category_id,
                     'is_active' => $product->is_active,
                     'updated_at' => $product->updated_at,
                 ],

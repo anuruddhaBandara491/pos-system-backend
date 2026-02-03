@@ -482,9 +482,152 @@
 
 ---
 
+## Categories
+
+### 24) List Categories
+- **Method:** GET
+- **URL:** `/api/v1/categories`
+- **Description:** List all product categories.
+- **Access:** Cashier+
+- **Request Body:** None
+- **Response (200):**
+```json
+{
+  "success": true,
+  "message": "Categories retrieved successfully",
+  "data": [
+    {
+      "id": 1,
+      "name": "Beverages",
+      "description": "All drink items",
+      "created_at": "2026-02-01T10:00:00Z",
+      "updated_at": "2026-02-01T10:00:00Z"
+    },
+    {
+      "id": 2,
+      "name": "Snacks",
+      "description": "Food items and snacks",
+      "created_at": "2026-02-01T10:00:00Z",
+      "updated_at": "2026-02-01T10:00:00Z"
+    }
+  ]
+}
+```
+
+### 25) Get Category
+- **Method:** GET
+- **URL:** `/api/v1/categories/{category}`
+- **Description:** Get category details.
+- **Access:** Cashier+
+- **Request Body:** None
+- **Response (200):**
+```json
+{
+  "success": true,
+  "message": "Category retrieved successfully",
+  "data": {
+    "id": 1,
+    "name": "Beverages",
+    "description": "All drink items",
+    "created_at": "2026-02-01T10:00:00Z",
+    "updated_at": "2026-02-01T10:00:00Z"
+  }
+}
+```
+
+### 26) Create Category
+- **Method:** POST
+- **URL:** `/api/v1/categories`
+- **Description:** Create a new product category.
+- **Access:** Manager/Admin
+- **Request Body:**
+```json
+{
+  "name": "Beverages",
+  "description": "All drink items"
+}
+```
+- **Validation:**
+  - `name` - Required, string, max 255 chars, unique
+  - `description` - Optional, string
+- **Response (201):**
+```json
+{
+  "success": true,
+  "message": "Category created successfully",
+  "data": {
+    "id": 1,
+    "name": "Beverages",
+    "description": "All drink items",
+    "created_at": "2026-02-01T10:00:00Z"
+  }
+}
+```
+- **Error (422):**
+```json
+{
+  "success": false,
+  "message": "The given data was invalid.",
+  "errors": {
+    "name": ["A category with this name already exists."]
+  }
+}
+```
+
+### 27) Update Category
+- **Method:** PUT
+- **URL:** `/api/v1/categories/{category}`
+- **Description:** Update category details.
+- **Access:** Manager/Admin
+- **Request Body:**
+```json
+{
+  "name": "Beverages",
+  "description": "Updated description"
+}
+```
+- **Validation:** Same as create (name remains unique per category)
+- **Response (200):**
+```json
+{
+  "success": true,
+  "message": "Category updated successfully",
+  "data": {
+    "id": 1,
+    "name": "Beverages",
+    "description": "Updated description",
+    "updated_at": "2026-02-01T10:00:00Z"
+  }
+}
+```
+
+### 28) Delete Category
+- **Method:** DELETE
+- **URL:** `/api/v1/categories/{category}`
+- **Description:** Delete a product category. Products with this category will have category_id set to null.
+- **Access:** Manager/Admin
+- **Request Body:** None
+- **Response (200):**
+```json
+{
+  "success": true,
+  "message": "Category deleted successfully",
+  "data": { "id": 1 }
+}
+```
+- **Error (404):**
+```json
+{
+  "success": false,
+  "message": "Resource not found"
+}
+```
+
+---
+
 ## Products
 
-### 24) List Products
+### 29) List Products
 - **Method:** GET
 - **URL:** `/api/v1/products`
 - **Description:** List products with filters/search and pagination.
@@ -502,7 +645,7 @@
 }
 ```
 
-### 25) Get Product
+### 30) Get Product
 - **Method:** GET
 - **URL:** `/api/v1/products/{product}`
 - **Description:** Get product details.
@@ -525,12 +668,15 @@
     "reorder_level": 5,
     "is_low_stock": false,
     "category": "Beverages",
-    "is_active": true
+    "category_id": 1,
+    "is_active": true,
+    "created_at": "2026-02-01T10:00:00Z",
+    "updated_at": "2026-02-01T10:00:00Z"
   }
 }
 ```
 
-### 26) Create Product
+### 31) Create Product
 - **Method:** POST
 - **URL:** `/api/v1/products`
 - **Description:** Create a new product.
@@ -554,7 +700,7 @@
 { "success": true, "message": "Product created successfully", "data": { "id": 1, "sku": "SKU-001" } }
 ```
 
-### 27) Update Product
+### 32) Update Product
 - **Method:** PUT
 - **URL:** `/api/v1/products/{product}`
 - **Description:** Update product details.
@@ -567,7 +713,7 @@
 { "success": true, "message": "Product updated successfully", "data": { "id": 1 } }
 ```
 
-### 28) Delete Product
+### 33) Delete Product
 - **Method:** DELETE
 - **URL:** `/api/v1/products/{product}`
 - **Description:** Delete product.
@@ -577,7 +723,7 @@
 { "success": true, "message": "Product deleted successfully", "data": { "id": 1 } }
 ```
 
-### 29) Adjust Stock
+### 34) Adjust Stock
 - **Method:** POST
 - **URL:** `/api/v1/products/{product}/adjust-stock`
 - **Description:** Adjust stock quantity (positive or negative).
@@ -600,7 +746,7 @@
 }
 ```
 
-### 30) Barcode Lookup (Keyboard Optimized)
+### 35) Barcode Lookup (Keyboard Optimized)
 - **Method:** GET
 - **URL:** `/api/v1/products/barcode/{barcode}`
 - **Description:** Fast barcode/SKU lookup.
@@ -614,7 +760,7 @@
 }
 ```
 
-### 31) Quick Search (Keyboard Optimized)
+### 36) Quick Search (Keyboard Optimized)
 - **Method:** GET
 - **URL:** `/api/v1/products/search/quick`
 - **Description:** Quick search for POS screen.

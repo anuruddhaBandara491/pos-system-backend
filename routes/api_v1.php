@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\API\AuthController;
 use App\Http\Controllers\API\BranchController;
+use App\Http\Controllers\API\CategoryController;
 use App\Http\Controllers\API\HealthController;
 use App\Http\Controllers\API\OrderController;
 use App\Http\Controllers\API\PaymentController;
@@ -80,6 +81,22 @@ Route::middleware(['auth:sanctum'])->group(function () {
         Route::delete('{branch}', [BranchController::class, 'destroy']); // Delete branch
     });
 
+    // ========== CATEGORY MANAGEMENT (Manager/Admin for create/update/delete, Cashier+ for view) ==========
+    Route::prefix('categories')->group(function () {
+        // Cashier+ can view categories
+        Route::middleware(['role:cashier,manager,admin'])->group(function () {
+            Route::get('/', [CategoryController::class, 'index']); // List categories
+            Route::get('{category}', [CategoryController::class, 'show']); // Get category details
+        });
+
+        // Manager/Admin can create, update, delete
+        Route::middleware(['role:manager,admin', 'protect_sensitive'])->group(function () {
+            Route::post('/', [CategoryController::class, 'store']); // Create category
+            Route::put('{category}', [CategoryController::class, 'update']); // Update category
+            Route::delete('{category}', [CategoryController::class, 'destroy']); // Delete category
+        });
+    });
+
     // ========== PRODUCT MANAGEMENT (Manager/Admin for create/update/delete, Cashier+ for view) ==========
     Route::prefix('products')->group(function () {
         // Cashier+ can view products
@@ -149,7 +166,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
             Route::get('{order}/invoice/csv', [ReceiptController::class, 'downloadInvoiceCsv']); // Download as CSV
             Route::get('{order}/invoice/json', [ReceiptController::class, 'downloadInvoiceJson']); // Download as JSON
         });
-        
+
     });
 
     // ========== STOCK MOVEMENT TRACKING (Cashier+ for view) ==========
