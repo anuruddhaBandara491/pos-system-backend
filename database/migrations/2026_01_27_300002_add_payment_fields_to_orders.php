@@ -12,26 +12,26 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('orders', function (Blueprint $table) {
-            if (! Schema::hasColumn('orders', 'paid_amount')) {
-                $table->decimal('paid_amount', 10, 2)->default(0)->after('total');
+            if (! Schema::hasColumn('orders', 'total_paid')) {
+                $table->decimal('total_paid', 10, 2)->default(0)->after('total');
             }
-            if (! Schema::hasColumn('orders', 'remaining_balance')) {
-                $table->decimal('remaining_balance', 10, 2)->default(0)->after('paid_amount');
+            if (! Schema::hasColumn('orders', 'balance')) {
+                $table->decimal('balance', 10, 2)->default(0)->after('paid_amount');
             }
         });
     }
 
-    /**
+    /**`
      * Reverse the migrations.
      */
     public function down(): void
     {
         Schema::table('orders', function (Blueprint $table) {
-            if (Schema::hasColumn('orders', 'remaining_balance')) {
-                $table->dropColumn('remaining_balance');
+            if (Schema::hasColumn('orders', 'balance')) {
+                $table->dropColumn('balance');
             }
-            if (Schema::hasColumn('orders', 'paid_amount')) {
-                $table->dropColumn('paid_amount');
+            if (Schema::hasColumn('orders', 'total_paid')) {
+                $table->dropColumn('total_paid');
             }
         });
     }

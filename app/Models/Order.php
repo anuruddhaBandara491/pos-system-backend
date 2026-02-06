@@ -14,8 +14,8 @@ class Order extends Model
         'tax',
         'discount',
         'total',
-        'paid_amount',
-        'remaining_balance',
+        'total_paid',
+        'balance',
         'status',
         'notes',
     ];
@@ -25,8 +25,8 @@ class Order extends Model
         'tax' => 'decimal:2',
         'discount' => 'decimal:2',
         'total' => 'decimal:2',
-        'paid_amount' => 'decimal:2',
-        'remaining_balance' => 'decimal:2',
+        'total_paid' => 'decimal:2',
+        'balance' => 'decimal:2',
     ];
 
     /**
@@ -69,7 +69,7 @@ class Order extends Model
         $this->subtotal = $this->items()->sum('line_total');
         $this->tax = round($this->subtotal * $taxRate, 2);
         $this->total = round($this->subtotal + $this->tax - $this->discount, 2);
-        $this->remaining_balance = round($this->total - $this->paid_amount, 2);
+        $this->balance = round($this->total - $this->total_paid, 2);
         $this->save();
     }
 
@@ -78,7 +78,7 @@ class Order extends Model
      */
     public function isFullyPaid(): bool
     {
-        return $this->remaining_balance <= 0;
+        return $this->balance <= 0;
     }
 
     /**

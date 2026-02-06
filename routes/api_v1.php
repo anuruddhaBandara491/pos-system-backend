@@ -7,6 +7,7 @@ use App\Http\Controllers\API\HealthController;
 use App\Http\Controllers\API\OrderController;
 use App\Http\Controllers\API\PaymentController;
 use App\Http\Controllers\API\ProductController;
+use App\Http\Controllers\API\QuickCheckoutController;
 use App\Http\Controllers\API\ReceiptController;
 use App\Http\Controllers\API\ReportController;
 use App\Http\Controllers\API\StockMovementController;
@@ -116,6 +117,12 @@ Route::middleware(['auth:sanctum'])->group(function () {
             Route::delete('{product}', [ProductController::class, 'destroy']); // Delete product
             Route::post('{product}/adjust-stock', [ProductController::class, 'adjustStock']); // Adjust stock
         });
+    });
+
+    // ========== QUICK CHECKOUT API (Single-call atomic checkout) ==========
+    Route::middleware(['role:cashier,manager,admin'])->group(function () {
+        Route::post('quick-checkout', [QuickCheckoutController::class, 'completeSale']); // Complete sale in one call
+        Route::post('quick-checkout/batch', [QuickCheckoutController::class, 'batchCompleteSales']); // Batch for offline sync
     });
 
     // Orders routes (placeholder)

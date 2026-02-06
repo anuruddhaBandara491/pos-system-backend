@@ -66,7 +66,7 @@ class ProductController extends BaseController
             }
             $query->orderBy($sortBy, $sortOrder);
 
-            $products = $query->with('branch', 'category')->paginate(15);
+            $products = $query->with('branch', 'category')->paginate(10);
             return $this->success(
                 [
                     'data' => $products->items(),

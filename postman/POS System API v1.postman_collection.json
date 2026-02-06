@@ -1,0 +1,1863 @@
+{
+	"info": {
+		"_postman_id": "pos-system-api-v1",
+		"name": "POS System API v1",
+		"description": "Complete API collection for POS System with Laravel Sanctum authentication",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "pos-system"
+	},
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "{{token}}",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "http://127.0.0.1:8000/api/v1",
+			"type": "string"
+		},
+		{
+			"key": "token",
+			"value": "",
+			"type": "string"
+		}
+	],
+	"item": [
+		{
+			"name": "Public Endpoints",
+			"item": [
+				{
+					"name": "Health",
+					"item": [
+						{
+							"name": "Health Check",
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/health",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"health"
+									]
+								},
+								"description": "Basic health status for API, database, and cache"
+							}
+						},
+						{
+							"name": "Detailed Health",
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/health/detailed",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"health",
+										"detailed"
+									]
+								},
+								"description": "Detailed health with service checks and memory usage"
+							}
+						},
+						{
+							"name": "Liveness Probe",
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/health/live",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"health",
+										"live"
+									]
+								},
+								"description": "Liveness probe for container health"
+							}
+						},
+						{
+							"name": "Readiness Probe",
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/health/ready",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"health",
+										"ready"
+									]
+								},
+								"description": "Readiness probe (checks critical dependencies)"
+							}
+						}
+					]
+				},
+				{
+					"name": "Version",
+					"item": [
+						{
+							"name": "Current Version",
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/version",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"version"
+									]
+								},
+								"description": "Basic API version and environment info"
+							}
+						},
+						{
+							"name": "Detailed Version",
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/version/detailed",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"version",
+										"detailed"
+									]
+								},
+								"description": "Full build, framework, and database version info"
+							}
+						},
+						{
+							"name": "Compatibility Check",
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/version/compatibility?client=electron&version=1.0.0",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"version",
+										"compatibility"
+									],
+									"query": [
+										{
+											"key": "client",
+											"value": "electron"
+										},
+										{
+											"key": "version",
+											"value": "1.0.0"
+										}
+									]
+								},
+								"description": "Check client compatibility"
+							}
+						},
+						{
+							"name": "Changelog",
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/version/changelog?limit=10",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"version",
+										"changelog"
+									],
+									"query": [
+										{
+											"key": "limit",
+											"value": "10"
+										}
+									]
+								},
+								"description": "Release notes"
+							}
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Authentication",
+			"item": [
+				{
+					"name": "Login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 200) {",
+									"    var jsonData = pm.response.json();",
+									"    if (jsonData.data && jsonData.data.token) {",
+									"        pm.collectionVariables.set(\"token\", jsonData.data.token);",
+									"        console.log(\"Token saved:\", jsonData.data.token);",
+									"    }",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"manager@example.com\",\n  \"password\": \"password\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/auth/login",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"auth",
+								"login"
+							]
+						},
+						"description": "Authenticate and obtain API token"
+					}
+				},
+				{
+					"name": "Logout",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/auth/logout",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"auth",
+								"logout"
+							]
+						},
+						"description": "Revoke current user tokens"
+					}
+				},
+				{
+					"name": "Current User",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/auth/me",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"auth",
+								"me"
+							]
+						},
+						"description": "Get authenticated user profile"
+					}
+				}
+			]
+		},
+		{
+			"name": "Users (Manager/Admin)",
+			"item": [
+				{
+					"name": "Create Cashier",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Jane Cashier\",\n  \"email\": \"jane@example.com\",\n  \"password\": \"P@ssw0rd1\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/users",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"users"
+							]
+						},
+						"description": "Create new cashier user"
+					}
+				},
+				{
+					"name": "List Users",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/users?per_page=15",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"users"
+							],
+							"query": [
+								{
+									"key": "per_page",
+									"value": "15"
+								},
+								{
+									"key": "is_active",
+									"value": "true",
+									"disabled": true
+								},
+								{
+									"key": "search",
+									"value": "",
+									"disabled": true
+								}
+							]
+						},
+						"description": "List users with filters and pagination"
+					}
+				},
+				{
+					"name": "Get User",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/users/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"users",
+								"1"
+							]
+						},
+						"description": "Get user details"
+					}
+				},
+				{
+					"name": "Activate User",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"is_active\": true\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/users/1/activate",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"users",
+								"1",
+								"activate"
+							]
+						},
+						"description": "Activate a user account"
+					}
+				},
+				{
+					"name": "Deactivate User",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"is_active\": false\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/users/1/deactivate",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"users",
+								"1",
+								"deactivate"
+							]
+						},
+						"description": "Deactivate a user account"
+					}
+				},
+				{
+					"name": "Delete User",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/users/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"users",
+								"1"
+							]
+						},
+						"description": "Soft delete a user"
+					}
+				}
+			]
+		},
+		{
+			"name": "Branches (Manager/Admin)",
+			"item": [
+				{
+					"name": "Create Branch",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Main Branch\",\n  \"code\": \"MAIN\",\n  \"address\": \"123 Main St\",\n  \"city\": \"Springfield\",\n  \"state\": \"IL\",\n  \"phone\": \"555-0101\",\n  \"email\": \"main@example.com\",\n  \"is_active\": true\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/branches",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"branches"
+							]
+						},
+						"description": "Create a new branch"
+					}
+				},
+				{
+					"name": "List Branches",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/branches",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"branches"
+							]
+						},
+						"description": "List branches with filters and pagination"
+					}
+				},
+				{
+					"name": "Get Branch",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/branches/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"branches",
+								"1"
+							]
+						},
+						"description": "Get branch details"
+					}
+				},
+				{
+					"name": "Update Branch",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Main Branch Updated\",\n  \"is_active\": true\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/branches/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"branches",
+								"1"
+							]
+						},
+						"description": "Update branch details"
+					}
+				},
+				{
+					"name": "Delete Branch",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/branches/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"branches",
+								"1"
+							]
+						},
+						"description": "Delete branch"
+					}
+				}
+			]
+		},
+		{
+			"name": "Categories",
+			"item": [
+				{
+					"name": "List Categories",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/categories",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"categories"
+							]
+						},
+						"description": "List all product categories (Cashier+)"
+					}
+				},
+				{
+					"name": "Get Category",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/categories/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"categories",
+								"1"
+							]
+						},
+						"description": "Get category details (Cashier+)"
+					}
+				},
+				{
+					"name": "Create Category",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Beverages\",\n  \"description\": \"All drink items\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/categories",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"categories"
+							]
+						},
+						"description": "Create a new product category (Manager/Admin)"
+					}
+				},
+				{
+					"name": "Update Category",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Beverages\",\n  \"description\": \"Updated description\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/categories/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"categories",
+								"1"
+							]
+						},
+						"description": "Update category details (Manager/Admin)"
+					}
+				},
+				{
+					"name": "Delete Category",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/categories/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"categories",
+								"1"
+							]
+						},
+						"description": "Delete a product category (Manager/Admin)"
+					}
+				}
+			]
+		},
+		{
+			"name": "Products",
+			"item": [
+				{
+					"name": "List Products",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/products?per_page=15",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"products"
+							],
+							"query": [
+								{
+									"key": "per_page",
+									"value": "15"
+								},
+								{
+									"key": "search",
+									"value": "",
+									"disabled": true
+								},
+								{
+									"key": "barcode",
+									"value": "",
+									"disabled": true
+								},
+								{
+									"key": "category",
+									"value": "",
+									"disabled": true
+								}
+							]
+						},
+						"description": "List products with filters and pagination"
+					}
+				},
+				{
+					"name": "Get Product",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/products/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"products",
+								"1"
+							]
+						},
+						"description": "Get product details"
+					}
+				},
+				{
+					"name": "Create Product",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"branch_id\": 1,\n  \"sku\": \"SKU-001\",\n  \"name\": \"Cola\",\n  \"description\": \"1L bottle\",\n  \"price\": 2.50,\n  \"cost\": 1.20,\n  \"stock_qty\": 20,\n  \"reorder_level\": 5,\n  \"category\": \"Beverages\",\n  \"is_active\": true\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/products",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"products"
+							]
+						},
+						"description": "Create a new product (Manager/Admin)"
+					}
+				},
+				{
+					"name": "Update Product",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"price\": 2.75,\n  \"stock_qty\": 25\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/products/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"products",
+								"1"
+							]
+						},
+						"description": "Update product details (Manager/Admin)"
+					}
+				},
+				{
+					"name": "Delete Product",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/products/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"products",
+								"1"
+							]
+						},
+						"description": "Delete product (Manager/Admin)"
+					}
+				},
+				{
+					"name": "Adjust Stock",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"quantity\": -5,\n  \"reason\": \"Damaged items\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/products/1/adjust-stock",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"products",
+								"1",
+								"adjust-stock"
+							]
+						},
+						"description": "Adjust stock quantity (Manager/Admin)"
+					}
+				},
+				{
+					"name": "Barcode Lookup",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/products/barcode/SKU-001",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"products",
+								"barcode",
+								"SKU-001"
+							]
+						},
+						"description": "Fast barcode/SKU lookup"
+					}
+				},
+				{
+					"name": "Quick Search",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/products/search/quick?q=cola",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"products",
+								"search",
+								"quick"
+							],
+							"query": [
+								{
+									"key": "q",
+									"value": "cola"
+								}
+							]
+						},
+						"description": "Quick search for POS screen"
+					}
+				}
+			]
+		},
+		{
+			"name": "Orders",
+			"item": [
+				{
+					"name": "Create Order",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"branch_id\": 1,\n  \"discount\": 0,\n  \"notes\": \"\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/orders",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"orders"
+							]
+						},
+						"description": "Create a new order (pending state)"
+					}
+				},
+				{
+					"name": "List Orders",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/orders?per_page=15",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"orders"
+							],
+							"query": [
+								{
+									"key": "per_page",
+									"value": "15"
+								},
+								{
+									"key": "status",
+									"value": "pending",
+									"disabled": true
+								}
+							]
+						},
+						"description": "List orders with filters and pagination"
+					}
+				},
+				{
+					"name": "Get Order",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/orders/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"orders",
+								"1"
+							]
+						},
+						"description": "Get order details with items"
+					}
+				},
+				{
+					"name": "Add Item",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"product_id\": 1,\n  \"quantity\": 2\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/orders/1/items",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"orders",
+								"1",
+								"items"
+							]
+						},
+						"description": "Add item to pending order"
+					}
+				},
+				{
+					"name": "Remove Item",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/orders/1/items/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"orders",
+								"1",
+								"items",
+								"1"
+							]
+						},
+						"description": "Remove item from pending order"
+					}
+				},
+				{
+					"name": "Complete Order",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"tax_rate\": 0.1\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/orders/1/complete",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"orders",
+								"1",
+								"complete"
+							]
+						},
+						"description": "Complete order and reduce stock"
+					}
+				},
+				{
+					"name": "Cancel Order",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/orders/1/cancel",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"orders",
+								"1",
+								"cancel"
+							]
+						},
+						"description": "Cancel order"
+					}
+				},
+				{
+					"name": "Quick Add Item",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"product_id\": 1,\n  \"quantity\": 1\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/orders/1/add-item",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"orders",
+								"1",
+								"add-item"
+							]
+						},
+						"description": "Fast add for POS keyboard"
+					}
+				},
+				{
+					"name": "Order Summary",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/orders/1/summary",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"orders",
+								"1",
+								"summary"
+							]
+						},
+						"description": "Minimal order totals"
+					}
+				},
+				{
+					"name": "Quick Pay",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"method\": \"cash\",\n  \"amount\": 5.5\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/orders/1/quick-pay",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"orders",
+								"1",
+								"quick-pay"
+							]
+						},
+						"description": "Fast payment with minimal response"
+					}
+				}
+			]
+		},
+		{
+			"name": "Quick Checkout (Optimized)",
+			"item": [
+				{
+					"name": "Complete Sale (Single)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"items\": [\n    {\n      \"product_id\": 1,\n      \"quantity\": 2,\n      \"price\": 5.00\n    },\n    {\n      \"product_id\": 5,\n      \"quantity\": 1\n    }\n  ],\n  \"payment\": {\n    \"method\": \"cash\",\n    \"amount\": 15.50,\n    \"reference\": \"CASH-001\"\n  },\n  \"discount\": 0,\n  \"tax_rate\": 0.1,\n  \"notes\": \"Quick sale\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/quick-checkout",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"quick-checkout"
+							]
+						},
+						"description": "⚡ FAST: Complete sale in single atomic call (60% faster than 4-API flow)\n\nThis endpoint:\n- Creates order\n- Adds all items\n- Records payment\n- Reduces stock\n- Returns minimal response\n\nAll in ~100ms vs 250-400ms for multi-step flow.\n\nUse for:\n✅ 80% of retail transactions\n✅ Simple sales\n✅ Fast checkout\n✅ Mobile POS\n\nAvoid for:\n❌ Complex orders\n❌ Split payments\n❌ Order modifications"
+					}
+				},
+				{
+					"name": "Complete Sale (Card Payment)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"items\": [\n    {\n      \"product_id\": 3,\n      \"quantity\": 5\n    }\n  ],\n  \"payment\": {\n    \"method\": \"card\",\n    \"amount\": 25.00,\n    \"reference\": \"CARD-TXN-12345\"\n  },\n  \"tax_rate\": 0.1\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/quick-checkout",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"quick-checkout"
+							]
+						},
+						"description": "Quick checkout with card payment"
+					}
+				},
+				{
+					"name": "Complete Sale (Custom Price)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"items\": [\n    {\n      \"product_id\": 1,\n      \"quantity\": 1,\n      \"price\": 4.50\n    }\n  ],\n  \"payment\": {\n    \"method\": \"cash\",\n    \"amount\": 5.00\n  },\n  \"discount\": 0.50,\n  \"tax_rate\": 0.1,\n  \"notes\": \"Manager discount applied\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/quick-checkout",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"quick-checkout"
+							]
+						},
+						"description": "Quick checkout with custom price override and discount"
+					}
+				},
+				{
+					"name": "Batch Complete Sales (Offline Sync)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"sales\": [\n    {\n      \"items\": [\n        {\n          \"product_id\": 1,\n          \"quantity\": 2\n        }\n      ],\n      \"payment\": {\n        \"method\": \"cash\",\n        \"amount\": 10.00\n      },\n      \"tax_rate\": 0.1,\n      \"timestamp\": \"2026-02-06T10:30:00Z\"\n    },\n    {\n      \"items\": [\n        {\n          \"product_id\": 3,\n          \"quantity\": 1\n        }\n      ],\n      \"payment\": {\n        \"method\": \"card\",\n        \"amount\": 5.00\n      },\n      \"tax_rate\": 0.1,\n      \"timestamp\": \"2026-02-06T10:35:00Z\"\n    }\n  ]\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/quick-checkout/batch",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"quick-checkout",
+								"batch"
+							]
+						},
+						"description": "🔄 OFFLINE SYNC: Submit multiple sales at once (max 50)\n\nUse for:\n✅ Offline POS sync\n✅ Bulk import\n✅ Mobile app sync\n\nFeatures:\n- Atomic per-sale (one fails, others succeed)\n- Returns detailed results\n- Includes timestamps\n- Stock validation for each sale"
+					}
+				}
+			]
+		},
+		{
+			"name": "Payments (Legacy)",
+			"item": [
+				{
+					"name": "Record Payment",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"method\": \"cash\",\n  \"amount\": 10.0,\n  \"reference\": \"RCPT-123\",\n  \"notes\": \"\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/orders/1/payments",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"orders",
+								"1",
+								"payments"
+							]
+						},
+						"description": "Record a payment for an order"
+					}
+				},
+				{
+					"name": "Payment History",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/orders/1/payments",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"orders",
+								"1",
+								"payments"
+							]
+						},
+						"description": "Get payment history for an order"
+					}
+				},
+				{
+					"name": "Payment Summary",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/orders/1/payments/summary",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"orders",
+								"1",
+								"payments",
+								"summary"
+							]
+						},
+						"description": "Summary grouped by payment methods"
+					}
+				},
+				{
+					"name": "Refund Payment",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"method\": \"cash\",\n  \"amount\": 5.0,\n  \"reference\": \"REF-1\",\n  \"notes\": \"\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/orders/1/payments/refund",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"orders",
+								"1",
+								"payments",
+								"refund"
+							]
+						},
+						"description": "Refund a payment (Manager/Admin)"
+					}
+				}
+			]
+		},
+		{
+			"name": "Payments (Idempotent)",
+			"item": [
+				{
+					"name": "Submit Payment",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Idempotency-Key",
+								"value": "{{$guid}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"orderId\": \"100\",\n  \"amount\": 10.0,\n  \"method\": \"cash\",\n  \"reference\": \"RCPT-1\",\n  \"metadata\": {\n    \"cashier\": \"john\"\n  }\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/payments/submit",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"payments",
+								"submit"
+							]
+						},
+						"description": "Idempotent payment submission"
+					}
+				},
+				{
+					"name": "Get Balance",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/payments/balance/100",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"payments",
+								"balance",
+								"100"
+							]
+						},
+						"description": "Get payment balance for an order"
+					}
+				},
+				{
+					"name": "Get Payment Status",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/payments/pay_abc/status",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"payments",
+								"pay_abc",
+								"status"
+							]
+						},
+						"description": "Confirm payment status"
+					}
+				},
+				{
+					"name": "Payment History",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/payments/history/100?limit=50",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"payments",
+								"history",
+								"100"
+							],
+							"query": [
+								{
+									"key": "limit",
+									"value": "50"
+								}
+							]
+						},
+						"description": "Payment history using idempotent store"
+					}
+				}
+			]
+		},
+		{
+			"name": "Receipts & Invoices",
+			"item": [
+				{
+					"name": "Receipt (JSON)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/payments/1/receipt",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"payments",
+								"1",
+								"receipt"
+							]
+						},
+						"description": "Get receipt data (JSON)"
+					}
+				},
+				{
+					"name": "Receipt (Text)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/payments/1/receipt/text",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"payments",
+								"1",
+								"receipt",
+								"text"
+							]
+						},
+						"description": "Receipt as plain text for thermal printing"
+					}
+				},
+				{
+					"name": "Receipt (HTML)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/payments/1/receipt/html",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"payments",
+								"1",
+								"receipt",
+								"html"
+							]
+						},
+						"description": "Receipt as HTML preview"
+					}
+				},
+				{
+					"name": "Reprint Receipt",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{}"
+						},
+						"url": {
+							"raw": "{{base_url}}/payments/1/receipt/reprint",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"payments",
+								"1",
+								"receipt",
+								"reprint"
+							]
+						},
+						"description": "Reprint a receipt"
+					}
+				},
+				{
+					"name": "Invoice (JSON)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/payments/1/invoice",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"payments",
+								"1",
+								"invoice"
+							]
+						},
+						"description": "Detailed invoice (Manager/Admin)"
+					}
+				},
+				{
+					"name": "Invoice (CSV)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/payments/1/invoice/csv",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"payments",
+								"1",
+								"invoice",
+								"csv"
+							]
+						},
+						"description": "Download invoice as CSV"
+					}
+				},
+				{
+					"name": "Invoice (JSON Download)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/payments/1/invoice/json",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"payments",
+								"1",
+								"invoice",
+								"json"
+							]
+						},
+						"description": "Download invoice as JSON"
+					}
+				}
+			]
+		},
+		{
+			"name": "Stock Movements",
+			"item": [
+				{
+					"name": "List Movements",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/stock-movements?days=30",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"stock-movements"
+							],
+							"query": [
+								{
+									"key": "days",
+									"value": "30"
+								},
+								{
+									"key": "type",
+									"value": "sale",
+									"disabled": true
+								}
+							]
+						},
+						"description": "List stock movements with filters"
+					}
+				},
+				{
+					"name": "Movement Detail",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/stock-movements/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"stock-movements",
+								"1"
+							]
+						},
+						"description": "Get movement details"
+					}
+				},
+				{
+					"name": "Movement Summary",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/stock-movements/summary?days=30",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"stock-movements",
+								"summary"
+							],
+							"query": [
+								{
+									"key": "days",
+									"value": "30"
+								}
+							]
+						},
+						"description": "Summary by type and product"
+					}
+				},
+				{
+					"name": "Product Movement History",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/stock-movements/products/1/history?days=30",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"stock-movements",
+								"products",
+								"1",
+								"history"
+							],
+							"query": [
+								{
+									"key": "days",
+									"value": "30"
+								}
+							]
+						},
+						"description": "Movement history for a specific product"
+					}
+				}
+			]
+		},
+		{
+			"name": "Reports",
+			"item": [
+				{
+					"name": "Daily Sales",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/reports/daily-sales?start_date=2026-02-01&end_date=2026-02-03",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"reports",
+								"daily-sales"
+							],
+							"query": [
+								{
+									"key": "start_date",
+									"value": "2026-02-01"
+								},
+								{
+									"key": "end_date",
+									"value": "2026-02-03"
+								},
+								{
+									"key": "branch_id",
+									"value": "1",
+									"disabled": true
+								}
+							]
+						},
+						"description": "Daily sales report"
+					}
+				},
+				{
+					"name": "Cashier Sales",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/reports/cashier-sales?start_date=2026-02-01&end_date=2026-02-03",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"reports",
+								"cashier-sales"
+							],
+							"query": [
+								{
+									"key": "start_date",
+									"value": "2026-02-01"
+								},
+								{
+									"key": "end_date",
+									"value": "2026-02-03"
+								}
+							]
+						},
+						"description": "Cashier performance report"
+					}
+				},
+				{
+					"name": "Product Sales",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/reports/product-sales?start_date=2026-02-01&end_date=2026-02-03",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"reports",
+								"product-sales"
+							],
+							"query": [
+								{
+									"key": "start_date",
+									"value": "2026-02-01"
+								},
+								{
+									"key": "end_date",
+									"value": "2026-02-03"
+								},
+								{
+									"key": "category",
+									"value": "",
+									"disabled": true
+								}
+							]
+						},
+						"description": "Product sales report"
+					}
+				},
+				{
+					"name": "Profit Report",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/reports/profit?start_date=2026-02-01&end_date=2026-02-03",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"reports",
+								"profit"
+							],
+							"query": [
+								{
+									"key": "start_date",
+									"value": "2026-02-01"
+								},
+								{
+									"key": "end_date",
+									"value": "2026-02-03"
+								},
+								{
+									"key": "group_by",
+									"value": "date",
+									"disabled": true
+								}
+							]
+						},
+						"description": "Profit analysis (Manager/Admin)"
+					}
+				}
+			]
+		}
+	]
+}

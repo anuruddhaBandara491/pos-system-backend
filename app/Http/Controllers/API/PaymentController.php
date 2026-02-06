@@ -460,8 +460,8 @@ class PaymentController extends BaseController
                     'order_id' => $order->id,
                     'order_number' => $order->order_number,
                     'order_total' => $order->total,
-                    'total_paid' => $order->paid_amount,
-                    'remaining_balance' => $order->remaining_balance,
+                    'total_paid' => $order->total_paid,
+                    'balance' => $order->balance,
                     'payment_count' => $payments->count(),
                     'payments' => $formattedPayments,
                 ],
@@ -498,7 +498,7 @@ class PaymentController extends BaseController
             }
 
             // Verify order has payments
-            if ($order->paid_amount <= 0) {
+            if ($order->total_paid <= 0) {
                 return $this->error('No payments to refund', 422);
             }
 
@@ -506,9 +506,9 @@ class PaymentController extends BaseController
             $refundAmount = $validated['amount'];
 
             // Check if refund amount exceeds paid amount
-            if ($refundAmount > $order->paid_amount) {
+            if ($refundAmount > $order->total_paid) {
                 return $this->error(
-                    'Refund amount exceeds paid amount of '.$order->paid_amount,
+                    'Refund amount exceeds paid amount of '.$order->total_paid,
                     422
                 );
             }
@@ -524,8 +524,8 @@ class PaymentController extends BaseController
             ]);
 
             // Update order paid_amount and remaining_balance
-            $order->paid_amount -= $refundAmount;
-            $order->remaining_balance = round($order->total - $order->paid_amount, 2);
+            $order->total_paid -= $refundAmount;
+            $order->balance = round($order->total - $order->total_paid, 2);
             $order->status = 'refunded';
             $order->save();
 
@@ -537,8 +537,8 @@ class PaymentController extends BaseController
                     'order_id' => $order->id,
                     'order_number' => $order->order_number,
                     'refund_amount' => abs($payment->amount),
-                    'previous_paid' => $order->paid_amount + $refundAmount,
-                    'current_paid' => $order->paid_amount,
+                    'previous_paid' => $order->total_paid + $refundAmount,
+                    'current_paid' => $order->total_paid,
                     'order_total' => $order->total,
                     'order_status' => $order->status,
                 ],
@@ -579,8 +579,8 @@ class PaymentController extends BaseController
                     'subtotal' => $order->subtotal,
                     'tax' => $order->tax,
                     'discount' => $order->discount,
-                    'total_paid' => $order->paid_amount,
-                    'remaining_balance' => $order->remaining_balance,
+                    'total_paid' => $order->total_paid,
+                    'balance' => $order->balance,
                     'is_fully_paid' => $order->remaining_balance <= 0,
                     'payment_methods' => $paymentsByMethod,
                     'order_status' => $order->status,

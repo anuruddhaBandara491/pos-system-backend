@@ -14,6 +14,7 @@ use App\Models\StockMovement;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class OrderController extends BaseController
 {
@@ -146,7 +147,6 @@ class OrderController extends BaseController
         try {
             $user = $request->user();
             $query = Order::query();
-
             // Restrict to user's branch if assigned
             if ($user->branch_id) {
                 $query->where('branch_id', $user->branch_id);
@@ -178,7 +178,6 @@ class OrderController extends BaseController
             $query->orderBy($sortBy, $sortOrder);
 
             $orders = $query->with(['branch', 'cashier'])->paginate($request->integer('per_page', 15));
-
             $data = $orders->items();
             $formattedData = array_map(function ($order) {
                 return [
@@ -346,7 +345,6 @@ class OrderController extends BaseController
     public function complete(CompleteOrderRequest $request, Order $order): JsonResponse
     {
         DB::beginTransaction();
-
         try {
             $user = request()->user();
 
@@ -626,10 +624,6 @@ class OrderController extends BaseController
 
             if ($order->status === 'cancelled' || $order->status === 'refunded') {
                 return $this->error('Cannot pay '.$order->status.' order', 422);
-            }
-
-            if ($amount > $order->remaining_balance) {
-                return $this->error('Amount exceeds balance', 422);
             }
 
             // Record payment

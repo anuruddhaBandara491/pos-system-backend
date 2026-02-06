@@ -921,6 +921,78 @@
 
 ---
 
+## Quick Checkout (Optimized)
+
+### Quick Checkout (Single)
+- **Method:** POST
+- **URL:** `/api/v1/quick-checkout`
+- **Description:** Complete a sale in a single atomic call (order + items + payment + stock update).
+- **Request Body:**
+```json
+{
+  "branch_id": 1,
+  "items": [
+    { "product_id": 1, "quantity": 2, "price": 5.00 },
+    { "product_id": 5, "quantity": 1 }
+  ],
+  "payment": { "method": "cash", "amount": 15.50, "reference": "CASH-001" },
+  "discount": 0,
+  "tax_rate": 0.1,
+  "notes": "Quick sale"
+}
+```
+- **Response (201):**
+```json
+{
+  "success": true,
+  "message": "Sale completed successfully",
+  "data": {
+    "order_id": 123,
+    "order_number": "ORD-1707123456-7890",
+    "total": 15.50,
+    "paid": 15.50,
+    "change": 0,
+    "items_count": 2,
+    "status": "completed"
+  }
+}
+```
+
+### Quick Checkout (Batch)
+- **Method:** POST
+- **URL:** `/api/v1/quick-checkout/batch`
+- **Description:** Submit multiple sales in a single request (offline sync, max 50).
+- **Request Body:**
+```json
+{
+  "sales": [
+    {
+      "branch_id": 1,
+      "items": [ { "product_id": 1, "quantity": 2 } ],
+      "payment": { "method": "cash", "amount": 10.00 },
+      "tax_rate": 0.1,
+      "timestamp": "2026-02-06T10:30:00Z"
+    }
+  ]
+}
+```
+- **Response (200):**
+```json
+{
+  "success": true,
+  "message": "Batch processing completed",
+  "data": {
+    "total": 1,
+    "successful": 1,
+    "failed": 0,
+    "results": {
+      "successful": [ { "index": 0, "data": { "success": true } } ],
+      "failed": []
+    }
+  }
+}
+```
+
 ## Order Payments (Legacy)
 
 ### 42) Record Payment
